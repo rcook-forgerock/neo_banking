@@ -22,6 +22,18 @@ import 'package:neo_banking/styles/typography.dart';
 
 import 'package:loader_overlay/loader_overlay.dart';
 
+import 'package:flutter/cupertino.dart';
+
+const double _kItemExtent = 32.0;
+const List<String> _fruitNames = <String>[
+  'Apple',
+  'Mango',
+  'Banana',
+  'Orange',
+  'Pineapple',
+  'Strawberry',
+];
+
 class AuthTypeLabel {
   String? value;
   String? label;
@@ -59,6 +71,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   );
 
   final List<TextEditingController> _controllers = [];
+
+  int _selectedFruit = 0;
 
   //int choiceValue = 0;
   //bool isChecked = false;
@@ -623,6 +637,19 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             DropdownMenu(
+              menuStyle: MenuStyle(
+                backgroundColor: WidgetStateProperty.resolveWith<Color?>((
+                  Set<WidgetState> states,
+                ) {
+                  if (states.contains(WidgetState.focused)) {
+                    return Colors.blueAccent;
+
+                    //Theme.of(context).colorScheme.primary
+                    // ..withValues(alpha: 0.5);
+                  }
+                  return null; // Use the component's default.
+                }),
+              ),
               width: 250,
               controller: controller,
               initialSelection: menuChoices[frCallback.output[2].value],
@@ -771,6 +798,25 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       builder: (BuildContext context) {
         return alert;
       },
+    );
+  }
+
+  // This shows a CupertinoModalPopup with a reasonable fixed height which hosts CupertinoPicker.
+  void _showCupertinoDialog(Widget child) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => Container(
+        height: 216,
+        padding: const EdgeInsets.only(top: 6.0),
+        // The Bottom margin is provided to align the popup above the system navigation bar.
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        // Provide a background color for the popup.
+        color: CupertinoColors.systemBackground.resolveFrom(context),
+        // Use a SafeArea widget to avoid system overlaps.
+        child: SafeArea(top: false, child: child),
+      ),
     );
   }
 }
